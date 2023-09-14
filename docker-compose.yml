@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  python:
+    image: python:latest
+    platform: linux/x86_64
+    build: 
+      context: .
+      dockerfile: python.Dockerfile
+    volumes:
+      - ./:/root/code
+      - .vscode-server:/root/.vscode-server
+  mlflow:
+    command: mlflow server -h 0.0.0.0 --gunicorn-opts "--timeout 90"
+    image: mlflow:latest
+    platform: linux/x86_64
+    build: 
+      context: .
+      dockerfile: mlflow.Dockerfile
+    ports:
+      - 5000:5000
+    environment: 
+      - GUNICORN_CMD_ARGS="--timeout 180"
